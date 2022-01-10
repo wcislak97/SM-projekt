@@ -1,0 +1,3 @@
+/Users/damianciepiela/Desktop/SM2021-Projekt1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/damianciepiela/Desktop/SM2021-Projekt1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/damianciepiela/Desktop/SM2021-Projekt1/cmake-build-debug/CMakeFiles/SM2021_Projekt1.dir
