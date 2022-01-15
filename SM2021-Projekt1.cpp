@@ -39,45 +39,179 @@ void Funkcja7();
 void Funkcja8();
 void Funkcja9();
 
+//paleta kolor
+//0: [0, 0, 0]		    //0000
+//1: [0, 0, 255]	    //0001
+//2: [0, 85, 0]		    //0010
+//3: [0, 85, 255]	    //0011
+//4: [0, 170, 0]	    //0100
+//5: [0, 170, 255]	    //0101
+//6: [0, 255, 0]	    //0110
+//7: [0, 255, 255]	    //0111
+//8: [255, 0, 0]	    //1000
+//9: [255, 0, 255]	    //1001
+//10: [255, 85, 0]	    //1010
+//11: [255, 85, 255]	//1011
+//12: [255, 170, 0]	    //1100
+//13: [255, 170, 255]	//1101
+//14: [255, 255, 0]	    //1110
+//15: [255, 255, 255]	//1111
+
+//paleta szara
+//0: [0, 0, 0]		    //0000
+//1: [17, 17, 17]	    //0001
+//2: [34, 34, 34]     	//0010
+//3: [51, 51, 51]     	//0011
+//4: [68, 68, 68]     	//0100
+//5: [85, 85, 85]    	//0101
+//6: [102, 102, 102]  	//0110
+//7: [119, 119, 119]  	//0111
+//8: [136, 136, 136]  	//1000
+//9: [153, 153, 153]  	//1001
+//10: [170, 170, 170] 	//1010
+//11: [187, 187, 187] 	//1011
+//12: [204, 204, 204] 	//1100
+//13: [221, 221, 221] 	//1101
+//14: [238, 238, 238] 	//1110
+//15: [255, 255, 255] 	//1111
+
+SDL_Color paleta16[16];
+
+SDL_Color paleta16szara[16];
+
+
+void wygenerujPalete16Kolorow(){
+
+int indeks=0;
+Uint8 R,G,B;
+
+for(int r=0;r<2;r++){
+    for(int g=0;g<4;g++){
+        for(int b=0;b<2;b++){
+            R=r*255/1;
+            G=g*255/3;
+            B=b*255/1;
+
+            paleta16[indeks]={R,G,B};
+            cout<<(int)indeks<<": ["<<(int)R<<", "<<(int)G<<", "<<(int)B<<"]"<<endl;
+            indeks++;
+        }
+    }
+}
+
+}
+
+void wygenerujPalete16Szara(){
+
+int indeks=0;
+Uint8 R,G,B;
+Uint8 BW;
+
+for(BW=0;BW<16;BW++){
+            R=BW*17;
+            G=BW*17;
+            B=BW*17;
+
+            paleta16szara[indeks]={R,G,B};
+            cout<<(int)indeks<<": ["<<(int)R<<", "<<(int)G<<", "<<(int)B<<"]"<<endl;
+            indeks++;
+        }
+
+}
+
+void konwersjaKolorDedykowana4Bit(){
+
+SDL_Color kolor;
+Uint8 R,G,B;
+Uint8 RGB;
+for(int y=0;y<wysokosc;y++){
+    for (int x=0;x<szerokosc/2;x++){
+        kolor=getPixel(x,y);
+        R=kolor.r;
+        G=kolor.g;
+        B=kolor.b;
+
+        R=(R>>7);
+        G=(G>>6);
+        B=(B>>7);
+
+        RGB=(B)+(G<<1)+(R<<3);
+
+        for(int i=0;i<16;i++)
+        if((int)RGB==i){
+            setPixel(x+szerokosc/2,y,paleta16[i].r,paleta16[i].g,paleta16[i].b);
+        }
+    }
+}
+}
+
+void konwersjaSzaryDedykowana4Bit(){
+SDL_Color kolor;
+Uint8 R,G,B;
+Uint8 RGB;
+Uint8 BW;
+for(int y=0;y<wysokosc;y++){
+    for (int x=0;x<szerokosc/2;x++){
+        kolor=getPixel(x,y);
+        R=kolor.r;
+        G=kolor.g;
+        B=kolor.b;
+
+        R=(R>>7);
+        G=(G>>6);
+        B=(B>>7);
+
+        RGB=(B)+(G<<1)+(R<<3);
+
+        for(int i=0;i<16;i++)
+        if((int)RGB==i){
+            setPixel(x+szerokosc/2,y,paleta16szara[i].r,paleta16szara[i].g,paleta16szara[i].b);
+        }
+    }
+}
+}
+
 
 void Funkcja1() {
 
-    //...
-
+    wygenerujPalete16Kolorow();
+    wygenerujPalete16Szara();
     SDL_UpdateWindowSurface(window);
 }
 
+
+
 void Funkcja2() {
 
-    //...
+    konwersjaSzaryDedykowana4Bit();
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja3() {
 
-    //...
+    konwersjaKolorDedykowana4Bit();
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja4() {
 
-    //...
+
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja5() {
 
-    //...
+
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja6() {
 
-    //...
+
 
     SDL_UpdateWindowSurface(window);
 }
