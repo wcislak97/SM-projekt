@@ -145,6 +145,24 @@ for(int y=0;y<wysokosc;y++){
 }
 }
 
+SDL_Color konwersjaKolorDedykowana4Bit(SDL_Color kolor){
+
+    Uint8 R,G,B;
+    Uint8 RGB;
+
+    R=kolor.r;
+    G=kolor.g;
+    B=kolor.b;
+
+    R=(R>>7);
+    G=(G>>6);
+    B=(B>>7);
+
+    RGB=(B)+(G<<1)+(R<<3);
+
+    return { paleta16[(int)RGB].r, paleta16[(int)RGB].g, paleta16[(int)RGB].b };
+}
+
 void konwersjaSzaryDedykowana4Bit(){
 SDL_Color kolor;
 Uint8 R,G,B;
@@ -163,14 +181,141 @@ for(int y=0;y<wysokosc;y++){
 
         RGB=(B)+(G<<1)+(R<<3);
 
-        for(int i=0;i<16;i++)
-        if((int)RGB==i){
-            setPixel(x+szerokosc/2,y,paleta16szara[i].r,paleta16szara[i].g,paleta16szara[i].b);
-        }
+        setPixel(x+szerokosc/2,y,paleta16szara[(int)RGB].r, paleta16szara[(int)RGB].g, paleta16szara[(int)RGB].b);
     }
 }
 }
 
+SDL_Color konwersjaSzaryDedykowana4Bit(SDL_Color kolor){
+
+    Uint8 R,G,B;
+    Uint8 RGB;
+
+    R=kolor.r;
+    G=kolor.g;
+    B=kolor.b;
+
+    R=(R>>7);
+    G=(G>>6);
+    B=(B>>7);
+
+    RGB=(B)+(G<<1)+(R<<3);
+
+    return { paleta16szara[(int)RGB].r, paleta16szara[(int)RGB].g, paleta16szara[(int)RGB].b };
+}
+
+
+void ditheringRGB() {
+    SDL_Color kolor;
+    SDL_Color nowyKolor;
+
+    float bledyR[(szerokosc/2)+2][(wysokosc) + 2];
+    float bledyG[(szerokosc/2)+2][(wysokosc) + 2];
+    float bledyB[(szerokosc/2)+2][(wysokosc) + 2];
+
+    memset(bledyR, 0, sizeof(bledyR));
+    memset(bledyG, 0, sizeof(bledyG));
+    memset(bledyB, 0, sizeof(bledyB));
+
+    int bladR = 0;
+    int bladG = 0;
+    int bladB = 0;
+
+    int R, G, B;
+
+    int indeks;
+    int przesuniecie = 1;
+
+    int test = 8;
+
+    for (int y = 0; y < wysokosc / 2; y++) {
+        for (int x = 0; x < szerokosc / 2; x++) {
+            kolor = getPixel(x, y);
+
+            R = kolor.r + bledyR[x + przesuniecie][y];
+            G = kolor.g + bledyG[x + przesuniecie][y];
+            B = kolor.b + bledyB[x + przesuniecie][y];
+
+            if (R > 255) R = 255;
+            if (G > 255) G = 255;
+            if (B > 255) B = 255;
+
+            if (R < 0) R = 0;
+            if (G < 0) G = 0;
+            if (B < 0) B = 0;
+
+            nowyKolor = konwersjaKolorDedykowana4Bit({R, G, B});
+
+            int noweR = nowyKolor.r;
+            int noweG = nowyKolor.g;
+            int noweB = nowyKolor.b;
+
+			setPixel(x + szerokosc / 2, y, noweR, noweG, noweB);
+
+			bladR = R - noweR;
+            bladG = G - noweG;
+            bladB = B - noweB;
+
+            bledyR[x + przesuniecie + 1][y    ] += (bladR * 7.0 / 16.0);
+            bledyR[x + przesuniecie - 1][y + 1] += (bladR * 3.0 / 16.0);
+            bledyR[x + przesuniecie    ][y + 1] += (bladR * 5.0 / 16.0);
+            bledyR[x + przesuniecie + 1][y + 1] += (bladR * 1.0 / 16.0);
+
+            bledyG[x + przesuniecie + 1][y    ] += (bladG * 7.0 / 16.0);
+            bledyG[x + przesuniecie - 1][y + 1] += (bladG * 3.0 / 16.0);
+            bledyG[x + przesuniecie    ][y + 1] += (bladG * 5.0 / 16.0);
+            bledyG[x + przesuniecie + 1][y + 1] += (bladG * 1.0 / 16.0);
+
+            bledyB[x + przesuniecie + 1][y    ] += (bladB * 7.0 / 16.0);
+            bledyB[x + przesuniecie - 1][y + 1] += (bladB * 3.0 / 16.0);
+            bledyB[x + przesuniecie    ][y + 1] += (bladB * 5.0 / 16.0);
+            bledyB[x + przesuniecie + 1][y + 1] += (bladB * 1.0 / 16.0);
+
+        }
+    }
+
+}
+
+void ditheringSzary() {
+
+    SDL_Color kolor;
+    int BW = 0;
+    int BWorg = 0;
+    int blad = 0;
+
+    SDL_Color nowyKolor;
+
+    float bledy[(szerokosc / 2 + 2)][wysokosc / 2 + 2]{{}};
+
+    int przesuniecie = 1;
+
+    for (int y =0; y < wysokosc / 2 ; y++){
+        for (int x =0; x < szerokosc  /2 ; x++){
+            kolor = getPixel(x, y);
+            //nowyKolor = konwersjaSzaryDedykowana4Bit(kolor);
+            //setPixel(x + szerokosc / 2, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+
+            BWorg = 0.299 * kolor.r + 0.587 * kolor.g + 0.114 * kolor.b;
+
+            BW = BWorg + bledy[x+przesuniecie][y];
+
+            if(BW>127){
+                setPixel(x , y + wysokosc / 2, 255,255,255);
+                blad = BW - 255;
+            }
+            else {
+                setPixel(x, y + wysokosc / 2, 0,0,0);
+                blad = BW ;
+            }
+            bledy[x+przesuniecie + 1][y    ] += (blad * 7.0 / 16.0);
+            bledy[x+przesuniecie - 1][y + 1] += (blad * 3.0 / 16.0);
+            bledy[x+przesuniecie    ][y + 1] += (blad * 5.0 / 16.0);
+            bledy[x+przesuniecie - 1][y + 1] += (blad * 1.0 / 16.0);
+        }
+    }
+    SDL_UpdateWindowSurface(window);
+
+}
 
 void Funkcja1() {
 
@@ -197,14 +342,14 @@ void Funkcja3() {
 
 void Funkcja4() {
 
-
+    ditheringRGB();
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja5() {
 
-
+    ditheringSzary();
 
     SDL_UpdateWindowSurface(window);
 }
