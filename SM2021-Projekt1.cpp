@@ -93,7 +93,7 @@ for(int b=0;b<2;b++){
             B=b*255/1;
 
             paleta16[indeks]={R,G,B};
-            cout<<(int)indeks<<": ["<<(int)R<<", "<<(int)G<<", "<<(int)B<<"]"<<endl;
+           // cout<<(int)indeks<<": ["<<(int)R<<", "<<(int)G<<", "<<(int)B<<"]"<<endl;
             indeks++;
         }
     }
@@ -113,7 +113,7 @@ for(BW=0;BW<16;BW++){
             B=BW*17;
 
             paleta16szara[indeks]={R,G,B};
-            cout<<(int)indeks<<": ["<<(int)R<<", "<<(int)G<<", "<<(int)B<<"]"<<endl;
+        //    cout<<(int)indeks<<": ["<<(int)R<<", "<<(int)G<<", "<<(int)B<<"]"<<endl;
             indeks++;
         }
 
@@ -319,8 +319,7 @@ void ditheringSzary() {
 
 void Funkcja1() {
 
-    wygenerujPalete16Kolorow();
-    wygenerujPalete16Szara();
+    konwersjaSzaryNarzucona4Bit();
     SDL_UpdateWindowSurface(window);
 }
 
@@ -328,14 +327,14 @@ void Funkcja1() {
 
 void Funkcja2() {
 
-    konwersjaSzaryNarzucona4Bit();
+    konwersjaKolorNarzucona4Bit();
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja3() {
 
-    konwersjaKolorNarzucona4Bit();
+    ditheringSzary();
 
     SDL_UpdateWindowSurface(window);
 }
@@ -349,7 +348,7 @@ void Funkcja4() {
 
 void Funkcja5() {
 
-    ditheringSzary();
+
 
     SDL_UpdateWindowSurface(window);
 }
@@ -481,163 +480,6 @@ void dekompresjaRLE(int wejscie[], int dlugosc) {
         }
     }
 }
-
-void linia(int x1, int y1, int x2, int y2, Uint8 R, Uint8 G, Uint8 B) {
-
-    int d;
-
-    int x = x1;
-    int y = y1;
-
-    int kx = 1;
-    int ky = 1;
-
-    int dx = x2-x1;
-    int dy = y2-y1;
-
-    if(dx<0) {
-        kx = -1;
-        dx  =x1-x2;
-    }
-
-    if(dy<0) {
-        ky = -1;
-        dy = y1-y2;
-    }
-
-    setPixel(x, y, R, G, B);
-
-    if(dx >= dy) {
-        d = 2*dy - dx;
-        while (x != x2) {
-            if (d >= 0) {
-                d = d + 2*(dy-dx);
-                x += kx;
-                y += ky;
-            }
-            else {
-                d = d + 2*dy;
-                x+=kx;
-            }
-            setPixel(x, y, R, G, B);
-        }
-    }
-    else {
-        d= 2*dx - dy;
-        while (y != y2) {
-            if (d >= 0) {
-                d = d + 2*(dx-dy);
-                y += ky;
-                x += kx;
-            }
-            else {
-                d= d + 2*dx;
-                y+=ky;
-            }
-            setPixel(x, y, R, G, B);
-        }
-    }
-
-    SDL_UpdateWindowSurface(window);
-}
-
-
-void okrag(int x, int y, int r, Uint8 R, Uint8 G, Uint8 B) {
-
-    int xx = 0;
-    int yy = r;
-    int d = 3 - 2*r;
-
-    setPixel(x+xx, y+yy, R, G, B);
-    setPixel(x-xx, y+yy, R, G, B);
-    setPixel(x+xx, y-yy, R, G, B);
-    setPixel(x-xx, y-yy, R, G, B);
-
-    setPixel(x+yy, y+xx, R, G, B);
-    setPixel(x-yy, y+xx, R, G, B);
-    setPixel(x+yy, y-xx, R, G, B);
-    setPixel(x-yy, y-xx, R, G, B);
-
-    while (xx<=yy) {
-        if(d < 0) {
-            d = d + 4*xx + 6;
-            xx++;
-        }
-        else {
-            d = d + 4*(xx-yy) + 10;
-            xx++;
-            yy--;
-        }
-        setPixel(x+xx, y+yy, R, G, B);
-        setPixel(x-xx, y+yy, R, G, B);
-        setPixel(x+xx, y-yy, R, G, B);
-        setPixel(x-xx, y-yy, R, G, B);
-
-        setPixel(x+yy, y+xx, R, G, B);
-        setPixel(x-yy, y+xx, R, G, B);
-        setPixel(x+yy, y-xx, R, G, B);
-        setPixel(x-yy, y-xx, R, G, B);
-    }
-
-    SDL_UpdateWindowSurface(window);
-}
-
-
-void elipsa(int x, int y, int a, int b, Uint8 R, Uint8 G, Uint8 B) {
-
-	int xx = 0;
-    int yy = b;
-    setPixel(x, y+yy, R, G, B);
-    setPixel(x, y-yy, R, G, B);
-    int d = 4*b*b - 4*a*a*b + a*a;
-
-    while ( (xx*xx)<=(a*a*a*a/(a*a+b*b)) ) {
-        if(d < 0) {
-            d = d + 8*b*b*xx + 12*b*b;
-            xx++;
-        }
-        else {
-            d = d + 8*b*b*xx + 12*b*b - 8*a*a*yy + 8*a*a;
-            xx++;
-            yy--;
-        }
-
-        setPixel(x+xx, y+yy, R, G, B);
-        setPixel(x-xx, y+yy, R, G, B);
-        setPixel(x+xx, y-yy, R, G, B);
-        setPixel(x-xx, y-yy, R, G, B);
-
-
-    }
-
-    d = 4*a*a - 4*b*b*a + b*b;
-    yy = 0;
-    xx = a;
-    setPixel(x+xx, y, R, G, B);
-    setPixel(x-xx, y, R, G, B);
-    while ( (yy*yy)<=(b*b*b*b/(b*b+a*a)) ) {
-        if(d < 0) {
-            d = d + 8*a*a*yy + 12*a*a;
-            yy++;
-        }
-        else {
-            d = d + 8*a*a*yy + 12*a*a - 8*b*b*xx + 8*b*b;
-            yy++;
-            xx--;
-        }
-
-        setPixel(x+xx, y+yy, R, G, B);
-        setPixel(x-xx, y+yy, R, G, B);
-        setPixel(x+xx, y-yy, R, G, B);
-        setPixel(x-xx, y-yy, R, G, B);
-
-
-    }
-
-    SDL_UpdateWindowSurface(window);
-
-}
-
 
 void setPixel(int x, int y, Uint8 R, Uint8 G, Uint8 B)
 {
@@ -873,6 +715,15 @@ int main(int argc, char* argv[]) {
     }
     SDL_UpdateWindowSurface(window);
 
+    wygenerujPalete16Kolorow();
+    wygenerujPalete16Szara();
+    cout<<"Wcisnij przycisk 'a' aby wczytac obraz z pliku"<<endl;
+    cout<<"Wcisnij przycisk '1' aby przekonwerowac obraz na obraz 4-bitowy z szara paleta narzucona bez ditheringu."<<endl;
+    cout<<"Wcisnij przycisk '2' aby przekonwerowac obraz na obraz 4-bitowy z kolorowa paleta narzucona bez ditheringu."<<endl;
+    cout<<"Wcisnij przycisk '3' aby przekonwerowac obraz na obraz 4-bitowy z szara paleta narzucona z ditheringiem."<<endl;
+    cout<<"Wcisnij przycisk '4' aby przekonwerowac obraz na obraz 4-bitowy z kolorow paleta narzucona z ditheringiem."<<endl;
+
+
 
     bool done = false;
     SDL_Event event;
@@ -923,14 +774,6 @@ int main(int argc, char* argv[]) {
                     ladujBMP("obrazek7.bmp", 0, 0);
                 if (event.key.keysym.sym == SDLK_k)
                     ladujBMP("obrazek8.bmp", 0, 0);
-				if (event.key.keysym.sym == SDLK_l)
-                    linia(rand()%szerokosc, rand()%wysokosc, rand()%szerokosc, rand()%wysokosc, 255, 128, 255);
-                if (event.key.keysym.sym == SDLK_o)
-					okrag(rand()%szerokosc, rand()%wysokosc, 10+rand()%200, 0, 255, 255);
-                if (event.key.keysym.sym == SDLK_e)
-                    elipsa(rand()%szerokosc, rand()%wysokosc, 10+rand()%200, 10+rand()%200, 255, 255, 128);
-
-
                 if (event.key.keysym.sym == SDLK_b)
                     czyscEkran(0, 0, 10);
                 else
