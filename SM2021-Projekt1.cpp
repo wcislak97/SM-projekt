@@ -124,7 +124,7 @@ void konwersjaKolorNarzucona4Bit(){
 SDL_Color kolor;
 Uint8 R,G,B;
 Uint8 RGB;
-for(int y=0;y<wysokosc;y++){
+for(int y=0;y<wysokosc / 2;y++){
     for (int x=0;x<szerokosc/2;x++){
         kolor=getPixel(x,y);
         R=kolor.r;
@@ -168,7 +168,7 @@ SDL_Color kolor;
 Uint8 R,G,B;
 Uint8 RGB;
 Uint8 BW;
-for(int y=0;y<wysokosc;y++){
+for(int y=0;y<wysokosc / 2;y++){
     for (int x=0;x<szerokosc/2;x++){
         kolor=getPixel(x,y);
         R=kolor.r;
@@ -294,26 +294,26 @@ void ditheringSzary() {
             kolor = getPixel(x, y);
             BWorg = 0.299 * kolor.r + 0.587 * kolor.g + 0.114 * kolor.b;
 
-            SDL_Color test = konwersjaSzaryDedykowana4Bit({kolor.r, kolor.b, kolor.g});
+            SDL_Color test = konwersjaSzaryNarzucona4Bit({kolor.r, kolor.b, kolor.g});
             setPixel(x + szerokosc / 2, y, test.r, test.g, test.b);
 
             BW = BWorg + bledy[x+przesuniecie][y];
 
             if(BW>191){
-                nowyKolor = konwersjaSzaryDedykowana4Bit({255, 255, 255});
+                nowyKolor = konwersjaSzaryNarzucona4Bit({255, 255, 255});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 //setPixel(x , y + wysokosc / 2, 255,255,255);
                 blad = BW - 255;
             } else if (BW > 127) {
-                nowyKolor = konwersjaSzaryDedykowana4Bit({191, 191, 191});
+                nowyKolor = konwersjaSzaryNarzucona4Bit({191, 191, 191});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 191;
             } else if (BW > 63) {
-                nowyKolor = konwersjaSzaryDedykowana4Bit({127, 127, 127});
+                nowyKolor = konwersjaSzaryNarzucona4Bit({127, 127, 127});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 127;
             } else {
-                nowyKolor = konwersjaSzaryDedykowana4Bit({0, 0, 0, 0});
+                nowyKolor = konwersjaSzaryNarzucona4Bit({0, 0, 0, 0});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 //setPixel(x, y + wysokosc / 2, 0,0,0);
                 blad = BW ;
