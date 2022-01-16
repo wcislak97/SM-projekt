@@ -290,21 +290,32 @@ void ditheringSzary() {
     int przesuniecie = 1;
 
     for (int y =0; y < wysokosc / 2 ; y++){
-        for (int x =0; x < szerokosc  /2 ; x++){
+        for (int x =0; x < szerokosc  / 2 ; x++){
             kolor = getPixel(x, y);
-            //nowyKolor = konwersjaSzaryDedykowana4Bit(kolor);
-            //setPixel(x + szerokosc / 2, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
-
             BWorg = 0.299 * kolor.r + 0.587 * kolor.g + 0.114 * kolor.b;
+
+            SDL_Color test = konwersjaSzaryDedykowana4Bit({kolor.r, kolor.b, kolor.g});
+            setPixel(x + szerokosc / 2, y, test.r, test.g, test.b);
 
             BW = BWorg + bledy[x+przesuniecie][y];
 
-            if(BW>127){
-                setPixel(x , y + wysokosc / 2, 255,255,255);
+            if(BW>191){
+                nowyKolor = konwersjaSzaryDedykowana4Bit({255, 255, 255});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                //setPixel(x , y + wysokosc / 2, 255,255,255);
                 blad = BW - 255;
-            }
-            else {
-                setPixel(x, y + wysokosc / 2, 0,0,0);
+            } else if (BW > 127) {
+                nowyKolor = konwersjaSzaryDedykowana4Bit({191, 191, 191});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 191;
+            } else if (BW > 63) {
+                nowyKolor = konwersjaSzaryDedykowana4Bit({127, 127, 127});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 127;
+            } else {
+                nowyKolor = konwersjaSzaryDedykowana4Bit({0, 0, 0, 0});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                //setPixel(x, y + wysokosc / 2, 0,0,0);
                 blad = BW ;
             }
             bledy[x+przesuniecie + 1][y    ] += (blad * 7.0 / 16.0);
