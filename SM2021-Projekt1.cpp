@@ -299,25 +299,74 @@ void ditheringSzary() {
 
             BW = BWorg + bledy[x+przesuniecie][y];
 
-            if(BW>191){
+            if(BW>238){
                 nowyKolor = konwersjaSzaryNarzucona4Bit({255, 255, 255});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 //setPixel(x , y + wysokosc / 2, 255,255,255);
                 blad = BW - 255;
-            } else if (BW > 127) {
-                nowyKolor = konwersjaSzaryNarzucona4Bit({191, 191, 191});
+            } else if (BW > 221) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({238, 238, 238});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
-                blad = BW - 191;
-            } else if (BW > 63) {
-                nowyKolor = konwersjaSzaryNarzucona4Bit({127, 127, 127});
+                blad = BW - 238;
+            } else if (BW > 204) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({221, 221, 221});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
-                blad = BW - 127;
+                blad = BW - 211;
+            } else if (BW > 187) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({204, 204, 204});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 204;
+            } else if (BW > 170) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({187, 187, 187});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 187;
+            } else if (BW > 153) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({170, 170, 170});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 170;
+            } else if (BW > 136) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({153, 153, 153});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 153;
+            } else if (BW > 119) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({136, 136, 136});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 136;
+            } else if (BW > 102) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({119, 119, 119});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 119;
+            } else if (BW > 85) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({102, 102, 102});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 102;
+            } else if (BW > 68) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({85, 85, 85});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 85;
+            } else if (BW > 51) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({68, 68, 68});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 68;
+            } else if (BW > 34) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({51, 51, 51});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 51;
+            } else if (BW > 17) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({34, 34, 34});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 34;
+            } else if (BW > 0) {
+                nowyKolor = konwersjaSzaryNarzucona4Bit({17, 17, 17});
+                setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+                blad = BW - 17;
             } else {
-                nowyKolor = konwersjaSzaryNarzucona4Bit({0, 0, 0, 0});
+                nowyKolor = konwersjaSzaryNarzucona4Bit({0, 0, 0});
                 setPixel(x , y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
-                //setPixel(x, y + wysokosc / 2, 0,0,0);
                 blad = BW ;
             }
+
+
             bledy[x+przesuniecie + 1][y    ] += (blad * 7.0 / 16.0);
             bledy[x+przesuniecie - 1][y + 1] += (blad * 3.0 / 16.0);
             bledy[x+przesuniecie    ][y + 1] += (blad * 5.0 / 16.0);
