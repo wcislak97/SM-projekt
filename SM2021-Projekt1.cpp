@@ -40,21 +40,21 @@ void Funkcja8();
 void Funkcja9();
 
 //paleta kolor
-//0: [0, 0, 0]		    //0000
-//1: [0, 0, 255]	    //0001
-//2: [0, 85, 0]		    //0010
-//3: [0, 85, 255]	    //0011
-//4: [0, 170, 0]	    //0100
-//5: [0, 170, 255]	    //0101
-//6: [0, 255, 0]	    //0110
-//7: [0, 255, 255]	    //0111
-//8: [255, 0, 0]	    //1000
-//9: [255, 0, 255]	    //1001
-//10: [255, 85, 0]	    //1010
+//0:  [0, 0, 0]		    //0000
+//1:  [255, 0, 0]       //0001
+//2:  [0, 85, 0]        //0010
+//3:  [255, 85, 0]      //0011
+//4:  [0, 170, 0]       //0100
+//5:  [255, 170, 0]     //0101
+//6:  [0, 255, 0]       //0110
+//7:  [255, 255, 0]     //0111
+//8:  [0, 0, 255]       //1000
+//9:  [255, 0, 255]     //1001
+//10: [0, 85, 255]      //1010
 //11: [255, 85, 255]	//1011
-//12: [255, 170, 0]	    //1100
+//12: [0, 170, 255]	    //1100
 //13: [255, 170, 255]	//1101
-//14: [255, 255, 0]	    //1110
+//14: [0, 255, 255]	    //1110
 //15: [255, 255, 255]	//1111
 
 //paleta szara
@@ -85,9 +85,9 @@ void wygenerujPalete16Kolorow(){
 int indeks=0;
 Uint8 R,G,B;
 
-for(int r=0;r<2;r++){
+for(int b=0;b<2;b++){
     for(int g=0;g<4;g++){
-        for(int b=0;b<2;b++){
+        for(int r=0;r<2;r++){
             R=r*255/1;
             G=g*255/3;
             B=b*255/1;
@@ -119,7 +119,7 @@ for(BW=0;BW<16;BW++){
 
 }
 
-void konwersjaKolorDedykowana4Bit(){
+void konwersjaKolorNarzucona4Bit(){
 
 SDL_Color kolor;
 Uint8 R,G,B;
@@ -135,7 +135,7 @@ for(int y=0;y<wysokosc;y++){
         G=(G>>6);
         B=(B>>7);
 
-        RGB=(B)+(G<<1)+(R<<3);
+        RGB=(B<<3)+(R)+(G<<1);
 
         for(int i=0;i<16;i++)
         if((int)RGB==i){
@@ -145,7 +145,7 @@ for(int y=0;y<wysokosc;y++){
 }
 }
 
-SDL_Color konwersjaKolorDedykowana4Bit(SDL_Color kolor){
+SDL_Color konwersjaKolorNarzucona4Bit(SDL_Color kolor){
 
     Uint8 R,G,B;
     Uint8 RGB;
@@ -158,12 +158,12 @@ SDL_Color konwersjaKolorDedykowana4Bit(SDL_Color kolor){
     G=(G>>6);
     B=(B>>7);
 
-    RGB=(B)+(G<<1)+(R<<3);
+    RGB=(B<<3)+(G<<1)+(R);
 
     return { paleta16[(int)RGB].r, paleta16[(int)RGB].g, paleta16[(int)RGB].b };
 }
 
-void konwersjaSzaryDedykowana4Bit(){
+void konwersjaSzaryNarzucona4Bit(){
 SDL_Color kolor;
 Uint8 R,G,B;
 Uint8 RGB;
@@ -179,14 +179,14 @@ for(int y=0;y<wysokosc;y++){
         G=(G>>6);
         B=(B>>7);
 
-        RGB=(B)+(G<<1)+(R<<3);
+        RGB=(B<<3)+(G<<1)+(R);
 
         setPixel(x+szerokosc/2,y,paleta16szara[(int)RGB].r, paleta16szara[(int)RGB].g, paleta16szara[(int)RGB].b);
     }
 }
 }
 
-SDL_Color konwersjaSzaryDedykowana4Bit(SDL_Color kolor){
+SDL_Color konwersjaSzaryNarzucona4Bit(SDL_Color kolor){
 
     Uint8 R,G,B;
     Uint8 RGB;
@@ -199,7 +199,7 @@ SDL_Color konwersjaSzaryDedykowana4Bit(SDL_Color kolor){
     G=(G>>6);
     B=(B>>7);
 
-    RGB=(B)+(G<<1)+(R<<3);
+    RGB=(B<<3)+(G<<1)+(R);
 
     return { paleta16szara[(int)RGB].r, paleta16szara[(int)RGB].g, paleta16szara[(int)RGB].b };
 }
@@ -244,7 +244,7 @@ void ditheringRGB() {
             if (G < 0) G = 0;
             if (B < 0) B = 0;
 
-            nowyKolor = konwersjaKolorDedykowana4Bit({R, G, B});
+            nowyKolor = konwersjaKolorNarzucona4Bit({R, G, B});
 
             int noweR = nowyKolor.r;
             int noweG = nowyKolor.g;
@@ -328,14 +328,14 @@ void Funkcja1() {
 
 void Funkcja2() {
 
-    konwersjaSzaryDedykowana4Bit();
+    konwersjaSzaryNarzucona4Bit();
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja3() {
 
-    konwersjaKolorDedykowana4Bit();
+    konwersjaKolorNarzucona4Bit();
 
     SDL_UpdateWindowSurface(window);
 }
