@@ -7,6 +7,7 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -428,9 +429,10 @@ void generujPaleteDopasowana() {
 
     int pixels_number = (wysokosc/2) * (szerokosc*2);
 
-    int r_colors [pixels_number];
-    int g_colors [pixels_number];
-    int b_colors [pixels_number];
+    int *r_colors = new int[pixels_number];
+    int *g_colors = new int[pixels_number];
+    int *b_colors = new int[pixels_number];
+
     int r_scope = 0, g_scope = 0, b_scope = 0;
 
     SDL_Color used_colors [pixels_number];
@@ -526,7 +528,6 @@ void generujPaleteDopasowana() {
     }
 
 
-
     for(int i=0; i < used_colors_number; i++) {
         color = used_colors[i];
         cout << "Sorted by " << widest_scope << ": " << (int) color.r << " " << (int) color.g << " " << (int) color.b << endl;
@@ -579,8 +580,6 @@ void generujPaleteDopasowana() {
         }
     }
 }
-
-
 
 
 
@@ -978,7 +977,8 @@ int main(int argc, char *argv[]) {
          << endl;
     cout << "Wcisnij przycisk '4' aby przekonwerowac obraz na obraz 4-bitowy z kolorow paleta narzucona z ditheringiem."
          << endl;
-
+     cout << "Wcisnij przycisk '5' aby przekonwerowac obraz na obraz 4-bitowy z kolorow paleta dedykowaną."
+         << endl;
 
     bool done = false;
     SDL_Event event;
