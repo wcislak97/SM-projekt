@@ -155,9 +155,11 @@ void konwersjaKolorNarzucona4Bit() {
             for (int i = 0; i < 16; i++)
                 if ((int) RGB == i) {
                     setPixel(x + szerokosc / 2, y, paleta16[i].r, paleta16[i].g, paleta16[i].b);
+
                 }
         }
     }
+    //zapiszBMP(szerokosc, 0, szerokosc, wysokosc, "plik.bmp");
 }
 
 SDL_Color konwersjaKolorNarzucona4Bit(SDL_Color kolor) {
@@ -190,14 +192,13 @@ void konwersjaSzaryNarzucona4Bit() {
             G = kolor.g;
             B = kolor.b;
 
-            R = (R >> 7);
-            G = (G >> 6);
-            B = (B >> 7);
+            BW = 0.299 *R+ 0.587 *G+ 0.114 *B;
 
-            RGB = (B << 3) + (G << 1) + (R);
+            BW=(BW>>4);
 
-            setPixel(x + szerokosc / 2, y, paleta16szara[(int) RGB].r, paleta16szara[(int) RGB].g,
-                     paleta16szara[(int) RGB].b);
+            setPixel(x + szerokosc / 2, y, paleta16szara[(int)BW].r, paleta16szara[(int) BW].g,
+                     paleta16szara[(int) BW].b);
+
         }
     }
 }
@@ -206,18 +207,17 @@ SDL_Color konwersjaSzaryNarzucona4Bit(SDL_Color kolor) {
 
     Uint8 R, G, B;
     Uint8 RGB;
+    Uint8 BW;
 
     R = kolor.r;
     G = kolor.g;
     B = kolor.b;
 
-    R = (R >> 7);
-    G = (G >> 6);
-    B = (B >> 7);
+    BW = 0.299 *R+ 0.587 *G+ 0.114 *B;
 
-    RGB = (B << 3) + (G << 1) + (R);
+    BW=(BW>>4);
 
-    return {paleta16szara[(int) RGB].r, paleta16szara[(int) RGB].g, paleta16szara[(int) RGB].b};
+    return {paleta16szara[(int) BW].r, paleta16szara[(int) BW].g, paleta16szara[(int) BW].b};
 }
 
 
