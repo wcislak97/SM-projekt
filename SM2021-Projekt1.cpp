@@ -8,17 +8,22 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <windows.h>
+
 
 using namespace std;
 
 SDL_Window *window = NULL;
 SDL_Surface *screen = NULL;
 
+
 #define szerokosc 512
 #define wysokosc 340
 
 #define tytul "SM2021 - Projekt 1 - Nazwisko Imie"
-
 
 void setPixel(int x, int y, Uint8 R, Uint8 G, Uint8 B);
 
@@ -94,6 +99,8 @@ SDL_Color paleta16[16];
 
 SDL_Color paleta16szara[16];
 
+SDL_Color paletaKolorDedykowana[16];
+
 
 void wygenerujPalete16Kolorow() {
 
@@ -116,6 +123,7 @@ void wygenerujPalete16Kolorow() {
 
 }
 
+
 void wygenerujPalete16Szara() {
 
     int indeks = 0;
@@ -134,13 +142,20 @@ void wygenerujPalete16Szara() {
 
 }
 
+
 void konwersjaKolorNarzucona4Bit() {
+
+    ofstream wyjscie("KonwersjaKolorNarzucona4BitBin.bin",ios::binary);
+
+    char temp;
 
     SDL_Color kolor;
     Uint8 R, G, B;
     Uint8 RGB;
+
     for (int y = 0; y < wysokosc / 2; y++) {
         for (int x = 0; x < szerokosc / 2; x++) {
+
             kolor = getPixel(x, y);
             R = kolor.r;
             G = kolor.g;
@@ -157,10 +172,21 @@ void konwersjaKolorNarzucona4Bit() {
                     setPixel(x + szerokosc / 2, y, paleta16[i].r, paleta16[i].g, paleta16[i].b);
 
                 }
+
+                if(!(x%2)){
+                    temp+=(char)RGB&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)RGB<<4;
+                }
         }
     }
-    //zapiszBMP(szerokosc, 0, szerokosc, wysokosc, "plik.bmp");
+
+    wyjscie.close();
+
 }
+
 
 SDL_Color konwersjaKolorNarzucona4Bit(SDL_Color kolor) {
 
@@ -180,7 +206,13 @@ SDL_Color konwersjaKolorNarzucona4Bit(SDL_Color kolor) {
     return {paleta16[(int) RGB].r, paleta16[(int) RGB].g, paleta16[(int) RGB].b};
 }
 
+
 void konwersjaSzaryNarzucona4Bit() {
+
+    ofstream wyjscie("KonwersjaSzaryNarzucona4BitBin.bin",ios::binary);
+
+    char temp;
+
     SDL_Color kolor;
     Uint8 R, G, B;
     Uint8 RGB;
@@ -199,9 +231,20 @@ void konwersjaSzaryNarzucona4Bit() {
             setPixel(x + szerokosc / 2, y, paleta16szara[(int)BW].r, paleta16szara[(int) BW].g,
                      paleta16szara[(int) BW].b);
 
+
+            if(!(x%2)){
+                    temp+=(char)BW&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)BW<<4;
+            }
+
         }
     }
+    wyjscie.close();
 }
+
 
 SDL_Color konwersjaSzaryNarzucona4Bit(SDL_Color kolor) {
 
@@ -222,6 +265,12 @@ SDL_Color konwersjaSzaryNarzucona4Bit(SDL_Color kolor) {
 
 
 void ditheringRGB() {
+    ofstream wyjscie("KonwersjaDitheringKolorNarzucona4BitBin.bin",ios::binary);
+
+    char temp;
+    Uint8 r,g,b;
+    Uint8 rgb;
+
     SDL_Color kolor;
     SDL_Color nowyKolor;
 
@@ -268,6 +317,24 @@ void ditheringRGB() {
 
             setPixel(x + szerokosc / 2, y, noweR, noweG, noweB);
 
+            r=noweR;
+            g=noweG;
+            b=noweB;
+            r = (r >> 7);
+            g = (g >> 6);
+            b = (b >> 7);
+
+            rgb = (b << 3) + (g << 1) + (r);
+
+            if(!(x%2)){
+                    temp+=(char)rgb&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)rgb<<4;
+                }
+
+
             bladR = R - noweR;
             bladG = G - noweG;
             bladB = B - noweB;
@@ -289,10 +356,16 @@ void ditheringRGB() {
 
         }
     }
-
+wyjscie.close();
 }
 
 void ditheringSzary() {
+
+    ofstream wyjscie("KonwersjaDitheringSzaryNarzucona4BitBin.bin",ios::binary);
+
+    char temp;
+    Uint8 r,g,b;
+    Uint8 rgb;
 
     SDL_Color kolor;
     int BW = 0;
@@ -317,70 +390,71 @@ void ditheringSzary() {
 
             if (BW > 238) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({255, 255, 255});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
-                //setPixel(x , y + wysokosc / 2, 255,255,255);
                 blad = BW - 255;
             } else if (BW > 221) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({238, 238, 238});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 238;
             } else if (BW > 204) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({221, 221, 221});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 211;
             } else if (BW > 187) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({204, 204, 204});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 204;
             } else if (BW > 170) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({187, 187, 187});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 187;
             } else if (BW > 153) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({170, 170, 170});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 170;
             } else if (BW > 136) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({153, 153, 153});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 153;
             } else if (BW > 119) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({136, 136, 136});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 136;
             } else if (BW > 102) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({119, 119, 119});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 119;
             } else if (BW > 85) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({102, 102, 102});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 102;
             } else if (BW > 68) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({85, 85, 85});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 85;
             } else if (BW > 51) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({68, 68, 68});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 68;
             } else if (BW > 34) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({51, 51, 51});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 51;
             } else if (BW > 17) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({34, 34, 34});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 34;
             } else if (BW > 0) {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({17, 17, 17});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW - 17;
             } else {
                 nowyKolor = konwersjaSzaryNarzucona4Bit({0, 0, 0});
-                setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
                 blad = BW;
             }
+            setPixel(x, y + wysokosc / 2, nowyKolor.r, nowyKolor.g, nowyKolor.b);
+
+            r=nowyKolor.r;
+            g=nowyKolor.g;
+            b=nowyKolor.b;
+            r = (r >> 7);
+            g = (g >> 6);
+            b = (b >> 7);
+
+            rgb = (b << 3) + (g << 1) + (r);
+
+            if(!(x%2)){
+                    temp+=(char)rgb&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)rgb<<4;
+                }
 
 
             bledy[x + przesuniecie + 1][y] += (blad * 7.0 / 16.0);
@@ -390,8 +464,9 @@ void ditheringSzary() {
         }
     }
     SDL_UpdateWindowSurface(window);
-
+wyjscie.close();
 }
+
 
 struct sort_by_r
 {
@@ -531,6 +606,7 @@ void generujPaleteDopasowana() {
     for(int i=0; i < used_colors_number; i++) {
         color = used_colors[i];
         cout << "Sorted by " << widest_scope << ": " << (int) color.r << " " << (int) color.g << " " << (int) color.b << endl;
+        paletaKolorDedykowana[i]={color.r,color.g,color.b};
     }
     std::cout << "Scopes of certain colors: r" << r_scope << " g" << g_scope << " b" << b_scope << std::endl;
 
@@ -582,10 +658,11 @@ void generujPaleteDopasowana() {
 }
 
 
-
 void Funkcja1() {
 
     konwersjaSzaryNarzucona4Bit();
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaSzaryNarzucona4Bit.bmp");
+
     SDL_UpdateWindowSurface(window);
 }
 
@@ -593,6 +670,7 @@ void Funkcja1() {
 void Funkcja2() {
 
     konwersjaKolorNarzucona4Bit();
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaKolorNarzucona4Bit.bmp");
 
     SDL_UpdateWindowSurface(window);
 }
@@ -600,6 +678,7 @@ void Funkcja2() {
 void Funkcja3() {
 
     ditheringSzary();
+    zapiszBMP(0,wysokosc,szerokosc,wysokosc,"KonwersjaDitheringSzaryNarzucona4Bbit.bmp");
 
     SDL_UpdateWindowSurface(window);
 }
@@ -607,12 +686,16 @@ void Funkcja3() {
 void Funkcja4() {
 
     ditheringRGB();
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaDitheringKolorNarzucona4Bbit.bmp");
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja5() {
+
     generujPaleteDopasowana();
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaKolorDopasowana4Bbit.bmp");
+
 
     SDL_UpdateWindowSurface(window);
 }
@@ -918,8 +1001,8 @@ void ladujBMP(char const *nazwa, int x, int y) {
 
 }
 
-
 void zapiszBMP(int x, int y, int szer, int wys, char const *nazwa) {
+
     SDL_Surface *bmp = SDL_CreateRGBSurface(SDL_SWSURFACE, szer, wys, 32, 0, 0, 0, 0);
     if (bmp == NULL) {
         printf("Unable to save bitmap: %s\n", SDL_GetError());
