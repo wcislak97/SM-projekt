@@ -143,9 +143,9 @@ void wygenerujPalete16Szara() {
 }
 
 
-void konwersjaKolorNarzucona4Bit() {
+void konwersjaKolorNarzucona4Bit(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
-    ofstream wyjscie("KonwersjaKolorNarzucona4BitBin.bin",ios::binary);
+    //ofstream wyjscie("KonwersjaKolorNarzucona4BitBin.bin",ios::binary);
 
     char temp;
 
@@ -173,17 +173,11 @@ void konwersjaKolorNarzucona4Bit() {
 
                 }
 
-                if(!(x%2)){
-                    temp+=(char)RGB&0x0F;
-                    wyjscie.write((char*)&temp,sizeof(char));
-                    }
-                    else{
-                temp=(char)RGB<<4;
-                }
+                rgb_array[x][y] = (int)RGB;
         }
     }
 
-    wyjscie.close();
+    //wyjscie.close();
 
 }
 
@@ -207,9 +201,9 @@ SDL_Color konwersjaKolorNarzucona4Bit(SDL_Color kolor) {
 }
 
 
-void konwersjaSzaryNarzucona4Bit() {
+void konwersjaSzaryNarzucona4Bit(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
-    ofstream wyjscie("KonwersjaSzaryNarzucona4BitBin.bin",ios::binary);
+    //ofstream wyjscie("KonwersjaSzaryNarzucona4BitBin.bin",ios::binary);
 
     char temp;
 
@@ -232,17 +226,11 @@ void konwersjaSzaryNarzucona4Bit() {
                      paleta16szara[(int) BW].b);
 
 
-            if(!(x%2)){
-                    temp+=(char)BW&0x0F;
-                    wyjscie.write((char*)&temp,sizeof(char));
-                    }
-                    else{
-                temp=(char)BW<<4;
-            }
+            rgb_array[x][y] = (int)BW;
 
         }
     }
-    wyjscie.close();
+    //wyjscie.close();
 }
 
 
@@ -264,8 +252,7 @@ SDL_Color konwersjaSzaryNarzucona4Bit(SDL_Color kolor) {
 }
 
 
-void ditheringRGB() {
-    ofstream wyjscie("KonwersjaDitheringKolorNarzucona4BitBin.bin",ios::binary);
+void ditheringRGB(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
     char temp;
     Uint8 r,g,b;
@@ -326,14 +313,7 @@ void ditheringRGB() {
 
             rgb = (b << 3) + (g << 1) + (r);
 
-            if(!(x%2)){
-                    temp+=(char)rgb&0x0F;
-                    wyjscie.write((char*)&temp,sizeof(char));
-                    }
-                    else{
-                temp=(char)rgb<<4;
-                }
-
+            rgb_array[x][y] = (int)rgb;
 
             bladR = R - noweR;
             bladG = G - noweG;
@@ -356,12 +336,11 @@ void ditheringRGB() {
 
         }
     }
-wyjscie.close();
 }
 
-void ditheringSzary() {
+void ditheringSzary(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
-    ofstream wyjscie("KonwersjaDitheringSzaryNarzucona4BitBin.bin",ios::binary);
+    //ofstream wyjscie("KonwersjaDitheringSzaryNarzucona4BitBin.bin",ios::binary);
 
     char temp;
     Uint8 r,g,b;
@@ -448,14 +427,7 @@ void ditheringSzary() {
 
             rgb = (b << 3) + (g << 1) + (r);
 
-            if(!(x%2)){
-                    temp+=(char)rgb&0x0F;
-                    wyjscie.write((char*)&temp,sizeof(char));
-                    }
-                    else{
-                temp=(char)rgb<<4;
-                }
-
+            rgb_array[x][y] = (int)rgb;
 
             bledy[x + przesuniecie + 1][y] += (blad * 7.0 / 16.0);
             bledy[x + przesuniecie - 1][y + 1] += (blad * 3.0 / 16.0);
@@ -464,7 +436,7 @@ void ditheringSzary() {
         }
     }
     SDL_UpdateWindowSurface(window);
-wyjscie.close();
+//wyjscie.close();
 }
 
 
@@ -658,76 +630,7 @@ void generujPaleteDopasowana() {
 }
 
 
-void Funkcja1() {
-
-    konwersjaSzaryNarzucona4Bit();
-    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaSzaryNarzucona4Bit.bmp");
-
-    SDL_UpdateWindowSurface(window);
-}
-
-
-void Funkcja2() {
-
-    konwersjaKolorNarzucona4Bit();
-    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaKolorNarzucona4Bit.bmp");
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja3() {
-
-    ditheringSzary();
-    zapiszBMP(0,wysokosc,szerokosc,wysokosc,"KonwersjaDitheringSzaryNarzucona4Bbit.bmp");
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja4() {
-
-    ditheringRGB();
-    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaDitheringKolorNarzucona4Bbit.bmp");
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja5() {
-
-    generujPaleteDopasowana();
-    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaKolorDopasowana4Bbit.bmp");
-
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja6() {
-
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja7() {
-
-    //...
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja8() {
-
-    //...
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void Funkcja9() {
-
-    //...
-
-    SDL_UpdateWindowSurface(window);
-}
-
-void kompresjaByteRun(int wejscie[], int dlugosc) {
+void kompresjaByteRun(int wejscie[], int dlugosc, vector<int>& wyjscie) {
     int i = 0;
     while (i < dlugosc) {
         if ((i < dlugosc - 1) && (wejscie[i] == wejscie[i + 1])) {
@@ -735,7 +638,9 @@ void kompresjaByteRun(int wejscie[], int dlugosc) {
             while ((i + j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + j + 1]) && (j < 127)) {
                 j++;
             }
-            cout << -j << ", " << wejscie[i + j] << ", ";
+            //cout << -j << ", " << wejscie[i + j] << ", ";
+            wyjscie.push_back(-j);
+            wyjscie.push_back(wejscie[i + j]);
             i += (j + 1);
         } else {
             int j = 0;
@@ -745,12 +650,15 @@ void kompresjaByteRun(int wejscie[], int dlugosc) {
             if ((i + j == dlugosc - 1) && (j < 127)) {
                 j++;
             }
-            cout << (j - 1) << ", ";
+            //cout << (j - 1) << ", ";
+            wyjscie.push_back(j - 1);
             for (int k = 0; k < j; k++) {
-                cout << wejscie[i + k] << ", ";
+                //cout << wejscie[i + k] << ", ";
+                wyjscie.push_back(wejscie[i + k]);
             }
             i += j;
         }
+        //cout << wyjscie[i] << endl;
     }
 }
 
@@ -773,7 +681,7 @@ void dekompresjaByteRun(int wejscie[], int dlugosc) {
     }
 }
 
-void kompresjaRLE(int wejscie[], int dlugosc) {
+void kompresjaRLE(int wejscie[], int dlugosc, vector<int>& wyjscie) {
     int i = 0;
 
     while (i < dlugosc) {
@@ -782,7 +690,9 @@ void kompresjaRLE(int wejscie[], int dlugosc) {
             while ((i + j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + j + 1]) && (j < 254)) {
                 j++;
             }
-            cout << j + 1 << ", " << wejscie[i + j] << ", ";
+            //cout << j + 1 << ", " << wejscie[i + j] << ", ";
+            wyjscie.push_back(wejscie[j + 1]);
+            wyjscie.push_back(wejscie[i + j]);
             i += (j + 1);
         } else {
             int j = 0;
@@ -792,12 +702,16 @@ void kompresjaRLE(int wejscie[], int dlugosc) {
             if ((i + j == dlugosc - 1) && (j < 254)) {
                 j++;
             }
-            cout << (int) 0 << ", " << j << ", ";
+            //cout << (int) 0 << ", " << j << ", ";
+            wyjscie.push_back(0);
+            wyjscie.push_back(j);
             for (int k = 0; k < j; k++) {
-                cout << wejscie[i + k] << ", ";
+                //cout << wejscie[i + k] << ", ";
+                wyjscie.push_back(wejscie[i + k]);
             }
             if (j % 2 != 0) {
-                cout << (int) 0 << ", ";
+                //cout << (int) 0 << ", ";
+                wyjscie.push_back(0);
             }
             i += j;
         }
@@ -825,6 +739,187 @@ void dekompresjaRLE(int wejscie[], int dlugosc) {
             }
         }
     }
+}
+
+int rozmiar(vector<vector<int>>& dane) {
+    int sizeV = dane.size();
+    for(int i = 0; i < dane.size(); i++) {
+        sizeV += dane[i].size();
+    }
+    cout << sizeV << endl;
+}
+
+void zapisz(string nazwa, vector<vector<int>>& dane) {
+    ofstream wyjscie(nazwa + ".bin",ios::binary);
+    char temp;
+    for (int i = 0; i < dane.size(); i++) {
+        for (int j = 0; j < dane[i].size(); j++) {
+            if(!(j%2)){
+                    temp+=(char)dane[i][j]&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)dane[i][j]<<4;
+                }
+        }
+    }
+    wyjscie.close();
+}
+
+void Funkcja1() {
+
+    auto rgb_array = new int[szerokosc / 2][wysokosc / 2];
+    konwersjaSzaryNarzucona4Bit(rgb_array);
+    vector<vector<int>> byte_run;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaByteRun(rgb_array[i], wysokosc / 2, row);
+        byte_run.push_back(row);
+    }
+    vector<vector<int>> rle;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaRLE(rgb_array[i], wysokosc / 2, row);
+        rle.push_back(row);
+    }
+    int rozmiar_byte_run = rozmiar(byte_run);
+    int rozmiar_rle= rozmiar(rle);
+
+    if (rozmiar_byte_run > rozmiar_rle) {
+        zapisz("KonwersjaSzaryNarzucona4Bit_rle", rle);
+    } else {
+        zapisz("KonwersjaSzaryNarzucona4Bit_byterun", byte_run);
+    }
+
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaSzaryNarzucona4Bit.bmp");
+
+    SDL_UpdateWindowSurface(window);
+}
+
+
+void Funkcja2() {
+
+    auto rgb_array = new int[szerokosc / 2][wysokosc / 2];
+    konwersjaKolorNarzucona4Bit(rgb_array);
+    vector<vector<int>> byte_run;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaByteRun(rgb_array[i], wysokosc / 2, row);
+        byte_run.push_back(row);
+    }
+    vector<vector<int>> rle;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaRLE(rgb_array[i], wysokosc / 2, row);
+        rle.push_back(row);
+    }
+    int rozmiar_byte_run = rozmiar(byte_run);
+    int rozmiar_rle= rozmiar(rle);
+
+    if (rozmiar_byte_run > rozmiar_rle) {
+        zapisz("KonwersjaKolorNarzucona4Bit_rle", rle);
+    } else {
+        zapisz("KonwersjaKolorNarzucona4Bit_byterun", byte_run);
+    }
+
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaKolorNarzucona4Bit.bmp");
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja3() {
+
+    auto rgb_array = new int[szerokosc / 2][wysokosc / 2];
+    ditheringSzary(rgb_array);
+    vector<vector<int>> byte_run;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaByteRun(rgb_array[i], wysokosc / 2, row);
+        byte_run.push_back(row);
+    }
+    vector<vector<int>> rle;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaRLE(rgb_array[i], wysokosc / 2, row);
+        rle.push_back(row);
+    }
+    int rozmiar_byte_run = rozmiar(byte_run);
+    int rozmiar_rle= rozmiar(rle);
+
+    if (rozmiar_byte_run > rozmiar_rle) {
+        zapisz("KonwersjaDitheringSzaryNarzucona4Bbit_rle", rle);
+    } else {
+        zapisz("KonwersjaDitheringSzaryNarzucona4Bbit_byterun", byte_run);
+    }
+
+    zapiszBMP(0,wysokosc,szerokosc,wysokosc,"KonwersjaDitheringSzaryNarzucona4Bbit.bmp");
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja4() {
+
+    auto rgb_array = new int[szerokosc / 2][wysokosc / 2];
+    ditheringRGB(rgb_array);
+    vector<vector<int>> byte_run;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaByteRun(rgb_array[i], wysokosc / 2, row);
+        byte_run.push_back(row);
+    }
+    vector<vector<int>> rle;
+    for (int i = 0; i < szerokosc / 2; i++) {
+        vector<int> row;
+        kompresjaRLE(rgb_array[i], wysokosc / 2, row);
+        rle.push_back(row);
+    }
+    int rozmiar_byte_run = rozmiar(byte_run);
+    int rozmiar_rle= rozmiar(rle);
+
+
+    if (rozmiar_byte_run > rozmiar_rle) {
+        zapisz("KonwersjaDitheringKolorNarzucona4Bbit_rle", rle);
+    } else {
+        zapisz("KonwersjaDitheringKolorNarzucona4Bbit_byterun", byte_run);
+    }
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaDitheringKolorNarzucona4Bbit.bmp");
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja5() {
+
+
+    generujPaleteDopasowana();
+    zapiszBMP(szerokosc,0,szerokosc,wysokosc,"KonwersjaKolorDopasowana4Bbit.bmp");
+
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja6() {
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja7() {
+
+    //...
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja8() {
+
+    //...
+
+    SDL_UpdateWindowSurface(window);
+}
+
+void Funkcja9() {
+
+    //...
+
+    SDL_UpdateWindowSurface(window);
 }
 
 void setPixel(int x, int y, Uint8 R, Uint8 G, Uint8 B) {
