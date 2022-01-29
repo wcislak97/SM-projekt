@@ -145,7 +145,7 @@ void wygenerujPalete16Szara() {
 
 void konwersjaKolorNarzucona4Bit(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
-    //ofstream wyjscie("KonwersjaKolorNarzucona4BitBin.bin",ios::binary);
+    ofstream wyjscie("KonwersjaKolorNarzucona4BitBin.bin",ios::binary);
 
     char temp;
 
@@ -173,11 +173,19 @@ void konwersjaKolorNarzucona4Bit(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
                 }
 
+                if(!(x%2)){
+                    temp+=(char)RGB&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)RGB<<4;
+                }
+
                 rgb_array[x][y] = (int)RGB;
         }
     }
 
-    //wyjscie.close();
+    wyjscie.close();
 
 }
 
@@ -203,7 +211,7 @@ SDL_Color konwersjaKolorNarzucona4Bit(SDL_Color kolor) {
 
 void konwersjaSzaryNarzucona4Bit(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
-    //ofstream wyjscie("KonwersjaSzaryNarzucona4BitBin.bin",ios::binary);
+    ofstream wyjscie("KonwersjaSzaryNarzucona4BitBin.bin",ios::binary);
 
     char temp;
 
@@ -226,11 +234,19 @@ void konwersjaSzaryNarzucona4Bit(int rgb_array[szerokosc / 2][wysokosc / 2]) {
                      paleta16szara[(int) BW].b);
 
 
+                     if(!(x%2)){
+                    temp+=(char)BW&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)BW<<4;
+            }
+
             rgb_array[x][y] = (int)BW;
 
         }
     }
-    //wyjscie.close();
+    wyjscie.close();
 }
 
 
@@ -254,6 +270,7 @@ SDL_Color konwersjaSzaryNarzucona4Bit(SDL_Color kolor) {
 
 void ditheringRGB(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
+ofstream wyjscie("KonwersjaDitheringKolorNarzucona4BitBin.bin",ios::binary);
     char temp;
     Uint8 r,g,b;
     Uint8 rgb;
@@ -313,6 +330,14 @@ void ditheringRGB(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
             rgb = (b << 3) + (g << 1) + (r);
 
+             if(!(x%2)){
+                    temp+=(char)rgb&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)rgb<<4;
+                }
+
             rgb_array[x][y] = (int)rgb;
 
             bladR = R - noweR;
@@ -336,11 +361,12 @@ void ditheringRGB(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
         }
     }
+    wyjscie.close();
 }
 
 void ditheringSzary(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
-    //ofstream wyjscie("KonwersjaDitheringSzaryNarzucona4BitBin.bin",ios::binary);
+    ofstream wyjscie("KonwersjaDitheringSzaryNarzucona4BitBin.bin",ios::binary);
 
     char temp;
     Uint8 r,g,b;
@@ -427,6 +453,14 @@ void ditheringSzary(int rgb_array[szerokosc / 2][wysokosc / 2]) {
 
             rgb = (b << 3) + (g << 1) + (r);
 
+            if(!(x%2)){
+                    temp+=(char)rgb&0x0F;
+                    wyjscie.write((char*)&temp,sizeof(char));
+                    }
+                    else{
+                temp=(char)rgb<<4;
+                }
+
             rgb_array[x][y] = (int)rgb;
 
             bledy[x + przesuniecie + 1][y] += (blad * 7.0 / 16.0);
@@ -436,7 +470,7 @@ void ditheringSzary(int rgb_array[szerokosc / 2][wysokosc / 2]) {
         }
     }
     SDL_UpdateWindowSurface(window);
-//wyjscie.close();
+wyjscie.close();
 }
 
 
@@ -543,7 +577,7 @@ void generujPaleteDopasowana() {
             if (!found) {
                 used_colors[used_colors_number] = color;
                 used_colors_number++;
-                cout << "Added "<< (int) color.r << " " << (int) color.g << " " << (int) color.b << endl;
+               // cout << "Added "<< (int) color.r << " " << (int) color.g << " " << (int) color.b << endl;
             }
 
             all_pixels_colors[y * (szerokosc/2) + x] = color;
@@ -577,10 +611,10 @@ void generujPaleteDopasowana() {
 
     for(int i=0; i < used_colors_number; i++) {
         color = used_colors[i];
-        cout << "Sorted by " << widest_scope << ": " << (int) color.r << " " << (int) color.g << " " << (int) color.b << endl;
+      //  cout << "Sorted by " << widest_scope << ": " << (int) color.r << " " << (int) color.g << " " << (int) color.b << endl;
         paletaKolorDedykowana[i]={color.r,color.g,color.b};
     }
-    std::cout << "Scopes of certain colors: r" << r_scope << " g" << g_scope << " b" << b_scope << std::endl;
+   // std::cout << "Scopes of certain colors: r" << r_scope << " g" << g_scope << " b" << b_scope << std::endl;
 
 
     vector <ColorToBytes> vec;
@@ -590,7 +624,7 @@ void generujPaleteDopasowana() {
     SDL_Color c;
 
     for (int i=0; i<used_colors_number; i++) {
-        cout << "USED COLOR: " << (int) used_colors[i].r << " " << (int) used_colors[i].g << " " << (int) used_colors[i].b << endl;
+      //  cout << "USED COLOR: " << (int) used_colors[i].r << " " << (int) used_colors[i].g << " " << (int) used_colors[i].b << endl;
 
         if (widest_scope == 'r') {
             b = used_colors[i].r / a;
@@ -601,14 +635,14 @@ void generujPaleteDopasowana() {
         }
         d = b * (float) 16.0/256.0 * used_colors_number;
 
-        cout << " - b: " << b << endl;
-        cout << " - all_pixels_index: " << d << endl;
+    //    cout << " - b: " << b << endl;
+     //   cout << " - all_pixels_index: " << d << endl;
 
         c = used_colors[d];
 
 
         vec.emplace_back(used_colors[i], c);
-        cout << " - " << (int) used_colors[i].r << " " << (int) used_colors[i].g << " " << (int) used_colors[i].b << " -> " << (int) c.r << " " << (int) c.g << " " << (int) c.b << endl;
+       // cout << " - " << (int) used_colors[i].r << " " << (int) used_colors[i].g << " " << (int) used_colors[i].b << " -> " << (int) c.r << " " << (int) c.g << " " << (int) c.b << endl;
     }
 
 
